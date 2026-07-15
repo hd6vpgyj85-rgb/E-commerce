@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel administrativo — Yukly Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#ffffff;
+  --black:#0a0a0a;
+  --lavender:#c4b5d6;
+  --gray-100:#f6f6f6;
+  --gray-200:#e8e8e8;
+  --gray-300:#d4d4d4;
+  --gray-500:#8a8a8a;
+  --error:#c0392b;
+  --error-bg:#fbeceb;
+  --warn:#a3720a;
+  --warn-bg:#fdf3e0;
+  --font-display:'Playfair Display', serif;
+  --font-body:'Inter', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:var(--font-body);
+  background:var(--white);
+  color:var(--black);
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+input{font-family:inherit;font-size:1rem;-webkit-appearance:none;appearance:none;border-radius:0;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+a{color:inherit;text-decoration:none;}
+
+.login-card{
+  width:100%;max-width:380px;
+  display:flex;flex-direction:column;align-items:center;
+}
+.login-logo{
+  width:56px;height:56px;
+  background:var(--black);
+  color:var(--white);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);
+  font-weight:700;font-size:1.5rem;
+  margin-bottom:16px;
+}
+.login-brand{
+  font-family:var(--font-display);
+  font-weight:700;font-size:1.5rem;
+  margin-bottom:4px;
+}
+.login-label{
+  font-size:0.82rem;color:var(--gray-500);
+  text-transform:uppercase;letter-spacing:0.06em;
+  margin-bottom:36px;
+}
+.login-form{width:100%;}
+.form-group{margin-bottom:16px;}
+.form-group label{
+  display:block;font-size:0.8rem;font-weight:600;margin-bottom:6px;
+}
+.form-group input{
+  width:100%;border:1px solid var(--gray-300);
+  padding:13px 14px;font-size:0.92rem;
+}
+.form-group input:focus{outline:none;border-color:var(--black);}
+
+.login-error{
+  display:none;
+  font-size:0.82rem;
+  padding:12px 14px;
+  margin-bottom:16px;
+  border:1px solid var(--error);
+  background:var(--error-bg);
+  color:var(--error);
+}
+.login-error.show{display:block;}
+.login-error.warn{
+  border-color:var(--warn);
+  background:var(--warn-bg);
+  color:var(--warn);
+}
+
+.login-submit{
+  width:100%;
+  background:var(--black);color:var(--white);
+  padding:14px;font-weight:600;font-size:0.9rem;
+  letter-spacing:0.03em;text-transform:uppercase;
+  margin-top:6px;
+  transition:opacity 0.2s;
+}
+.login-submit:disabled{opacity:0.5;cursor:not-allowed;}
+
+.login-back{
+  display:inline-block;margin-top:28px;
+  font-size:0.85rem;color:var(--gray-500);
+}
+.login-back:hover{color:var(--black);}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-logo">Y</div>
+  <div class="login-brand">Yukly Store</div>
+  <div class="login-label">Panel administrativo</div>
+
+  <div class="login-error" id="loginError"></div>
+
+  <form class="login-form" id="loginForm">
+    <div class="form-group">
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" autocomplete="username" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="login-submit" id="submitBtn">Ingresar</button>
+  </form>
+
+  <a href="index.html" class="login-back">&larr; Volver a la tienda</a>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_AUTH_DOMAIN",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_STORAGE_BUCKET",
+  messagingSenderId: "TU_MESSAGING_SENDER_ID",
+  appId: "TU_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const submitBtn = document.getElementById("submitBtn");
+const loginError = document.getElementById("loginError");
+
+const ERROR_MESSAGES = {
+  "auth/invalid-credential": "Correo o contraseña incorrectos.",
+  "auth/invalid-email": "El correo electrónico no es válido.",
+  "auth/user-not-found": "Correo o contraseña incorrectos.",
+  "auth/wrong-password": "Correo o contraseña incorrectos.",
+  "auth/too-many-requests": "Demasiados intentos. Intenta de nuevo más tarde.",
+  "auth/user-disabled": "Esta cuenta ha sido deshabilitada.",
+  "auth/network-request-failed": "Error de conexión. Verifica tu internet."
+};
+
+let redirected = false;
+
+onAuthStateChanged(auth, user => {
+  if(user && !redirected){
+    redirected = true;
+    window.location.href = "admin.html";
+  }
+});
+
+function showError(code){
+  const isWarn = code === "auth/too-many-requests";
+  loginError.textContent = ERROR_MESSAGES[code] || "Ocurrió un error al iniciar sesión. Intenta de nuevo.";
+  loginError.classList.toggle("warn", isWarn);
+  loginError.classList.add("show");
+}
+
+function hideError(){
+  loginError.classList.remove("show");
+}
+
+async function attemptLogin(){
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if(!email || !password) return;
+
+  hideError();
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Ingresando...";
+
+  try{
+    await signInWithEmailAndPassword(auth, email, password);
+  }catch(err){
+    showError(err.code);
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Ingresar";
+  }
+}
+
+loginForm.addEventListener("submit", e => {
+  e.preventDefault();
+  attemptLogin();
+});
+
+passwordInput.addEventListener("keydown", e => {
+  if(e.key === "Enter"){
+    e.preventDefault();
+    attemptLogin();
+  }
+});
+</script>
+</body>
+</html>
