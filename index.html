@@ -572,7 +572,7 @@ let collections = [];
 let products = [];
 let cart = loadCart();
 
-let activeTab = "all";
+let activeTab = null;
 let activeTags = new Set();
 let priceRange = "all";
 let searchTerm = "";
@@ -661,14 +661,22 @@ onSnapshot(collection(db, "products"), snap => {
 /* ---------- Tabs ---------- */
 
 function renderTabs(){
-  const tabs = [{ id: "all", name: "Todos" }, ...collections];
-  el.tabsInner.innerHTML = tabs.map(t => `
+  if(collections.length === 0){
+    el.tabsInner.innerHTML = '<div style="padding:16px;color:var(--gray-500);">Cargando colecciones...</div>';
+    return;
+  }
+  if(!activeTab) activeTab = collections[0].id;
+  el.tabsInner.innerHTML = collections.map(t => `
     <button class="tab-btn ${activeTab === t.id ? "active" : ""}" data-tab="${escapeHtml(t.id)}">${escapeHtml(t.name)}</button>
   `).join("");
   el.tabsInner.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       activeTab = btn.dataset.tab;
+      activeTags.clear();
+      priceRange = "all";
+      el.priceFilter.value = "all";
       renderTabs();
+      renderFilters();
       renderGrid();
     });
   });
@@ -678,7 +686,7 @@ function renderTabs(){
 
 function renderFilters(){
   const tagSet = new Set();
-  products.forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
+  products.filter(p => p.collectionId === activeTab).forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
   const tags = [...tagSet].sort();
 
   if(tags.length === 0){
@@ -731,7 +739,7 @@ function matchesPrice(price){
 
 function getFilteredProducts(){
   return products.filter(p => {
-    if(activeTab !== "all" && p.collectionId !== activeTab) return false;
+    if(p.collectionId !== activeTab) return false;
     if(searchTerm && !p.name?.toLowerCase().includes(searchTerm)) return false;
     if(!matchesPrice(Number(p.price) || 0)) return false;
     if(activeTags.size > 0){
