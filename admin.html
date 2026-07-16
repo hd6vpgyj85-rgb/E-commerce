@@ -3,345 +3,490 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel administrativo — Yukly Store</title>
+<title>Yukly Store — Administración</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --white:#ffffff;
-  --black:#0a0a0a;
-  --lavender:#c4b5d6;
-  --lavender-light:#f3eef8;
-  --gray-100:#f6f6f6;
-  --gray-200:#e8e8e8;
-  --gray-300:#d4d4d4;
-  --gray-500:#8a8a8a;
-  --gray-700:#4a4a4a;
-  --green:#2e7d4f;
-  --green-bg:#e8f5ee;
-  --amber:#a3720a;
-  --amber-bg:#fdf3e0;
-  --red:#c0392b;
-  --red-bg:#fbeceb;
-  --font-display:'Playfair Display', serif;
-  --font-body:'Inter', sans-serif;
-  --sidebar-width:240px;
+:root {
+  --white: #ffffff;
+  --black: #0a0a0a;
+  --lavender: #c4b5d6;
+  --lavender-dark: #9c85b3;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-400: #a3a3a3;
+  --gray-600: #525252;
+  --success: #15803d;
+  --success-bg: #dcfce7;
+  --warning: #a16207;
+  --warning-bg: #fef9c3;
+  --danger: #b91c1c;
+  --danger-bg: #fee2e2;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --sidebar-width: 240px;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
-  font-family:var(--font-body);
-  color:var(--black);
-  background:var(--gray-100);
-  min-height:100vh;
-}
-button{font-family:inherit;cursor:pointer;border:none;background:none;}
-input,select,textarea{font-family:inherit;font-size:1rem;-webkit-appearance:none;appearance:none;border-radius:0;}
-a{color:inherit;text-decoration:none;}
-img{max-width:100%;display:block;}
 
-.app{display:flex;min-height:100vh;}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--black);
+  background: var(--gray-100);
+  min-height: 100vh;
+}
+
+button, input, select, textarea { font-family: inherit; }
+
+img { display: block; max-width: 100%; }
+
+.app-layout { display: flex; min-height: 100vh; }
 
 /* Sidebar */
-.sidebar{
-  width:var(--sidebar-width);
-  background:var(--black);
-  color:var(--white);
-  display:flex;flex-direction:column;
-  position:fixed;top:0;bottom:0;left:0;
-  transform:translateX(-100%);
-  transition:transform 0.25s ease;
-  z-index:300;
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--black);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 300;
+  transition: transform 0.28s ease;
 }
-.sidebar.open{transform:translateX(0);}
-.sidebar-logo{
-  font-family:var(--font-display);
-  font-weight:700;font-size:1.3rem;
-  padding:26px 24px;
-  border-bottom:1px solid rgba(255,255,255,0.12);
-}
-.sidebar-nav{flex:1;padding:16px 0;}
-.sidebar-link{
-  display:block;width:100%;text-align:left;
-  padding:14px 24px;
-  font-size:0.9rem;font-weight:500;
-  color:rgba(255,255,255,0.65);
-  border-left:3px solid transparent;
-}
-.sidebar-link.active{
-  color:var(--white);font-weight:600;
-  border-left-color:var(--lavender);
-  background:rgba(255,255,255,0.05);
-}
-.sidebar-logout{
-  padding:18px 24px;
-  border-top:1px solid rgba(255,255,255,0.12);
-  font-size:0.85rem;font-weight:600;
-  color:rgba(255,255,255,0.75);
-  text-align:left;
-}
-.sidebar-logout:hover{color:var(--white);}
 
-.sidebar-overlay{
-  position:fixed;inset:0;background:rgba(10,10,10,0.5);
-  z-index:290;display:none;
+.sidebar-logo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 26px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
 }
-.sidebar-overlay.open{display:block;}
 
-@media (min-width:960px){
-  .sidebar{transform:translateX(0);position:fixed;}
-  .sidebar-overlay{display:none !important;}
+.sidebar-nav { flex: 1; padding: 16px 0; }
+
+.sidebar-nav-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  padding: 14px 24px;
+  font-size: 0.92rem;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-nav-item.active {
+  color: var(--white);
+  background: rgba(255,255,255,0.06);
+  border-left-color: var(--lavender);
+  font-weight: 600;
+}
+
+.sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.12); }
+
+.logout-btn {
+  width: 100%;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: var(--white);
+  padding: 11px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.logout-btn:hover { background: rgba(255,255,255,0.08); }
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,0.5);
+  z-index: 290;
+}
+
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+}
+
+.hamburger-btn span { width: 22px; height: 2px; background: var(--black); display: block; }
+
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .hamburger-btn { display: flex; }
 }
 
 /* Main */
-.main{
-  flex:1;
-  min-width:0;
-  width:100%;
-}
-@media (min-width:960px){
-  .main{margin-left:var(--sidebar-width);}
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.topbar{
-  position:sticky;top:0;z-index:80;
-  background:var(--white);
-  border-bottom:1px solid var(--gray-200);
-  padding:16px 24px;
-  display:flex;align-items:center;gap:16px;
+@media (max-width: 900px) {
+  .main-content { margin-left: 0; }
 }
-.hamburger{
-  width:36px;height:36px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;
-}
-@media (min-width:960px){
-  .hamburger{display:none;}
-}
-.topbar-title{
-  font-family:var(--font-display);
-  font-weight:600;font-size:1.2rem;
-  flex:1;
-}
-.view-store-link{
-  font-size:0.85rem;font-weight:600;
-  color:var(--gray-700);
-  white-space:nowrap;
-}
-.view-store-link:hover{color:var(--black);}
 
-.content{padding:24px;}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+}
 
-.section-header{
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;
-  margin-bottom:22px;
+.topbar-left { display: flex; align-items: center; gap: 14px; }
+
+.topbar h1 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; }
+
+.view-store-link { font-size: 0.85rem; color: var(--black); text-decoration: none; white-space: nowrap; }
+
+.view-store-link:hover { text-decoration: underline; }
+
+.content-area { padding: 32px; }
+
+@media (max-width: 640px) {
+  .topbar { padding: 14px 16px; }
+  .content-area { padding: 20px 16px; }
 }
-.section-header h2{font-family:var(--font-display);font-weight:600;font-size:1.4rem;}
-.btn-primary{
-  background:var(--black);color:var(--white);
-  padding:11px 20px;font-weight:600;font-size:0.85rem;
-  white-space:nowrap;
-}
-.btn-primary:hover{background:#222;}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
 /* Stat cards */
-.stats-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);
-  gap:14px;margin-bottom:28px;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
 }
-@media (min-width:700px){
-  .stats-grid{grid-template-columns:repeat(4,1fr);}
+
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  padding: 20px 22px;
 }
-.stat-card{
-  background:var(--white);
-  border:1px solid var(--gray-200);
-  padding:18px;
+
+.stat-card .stat-value { font-family: var(--font-display); font-size: 2rem; font-weight: 700; }
+
+.stat-card .stat-label { font-size: 0.8rem; color: var(--gray-600); margin-top: 4px; }
+
+/* Section header */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.stat-value{font-family:var(--font-display);font-weight:700;font-size:1.8rem;}
-.stat-label{font-size:0.78rem;color:var(--gray-500);margin-top:4px;}
+
+.section-header h2 { font-family: var(--font-display); font-size: 1.3rem; }
+
+.btn-primary {
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 11px 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
 
 /* Table */
-.table-wrap{
-  background:var(--white);
-  border:1px solid var(--gray-200);
-  overflow-x:auto;
+.table-wrap {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  overflow-x: auto;
 }
-table{width:100%;border-collapse:collapse;min-width:820px;}
-th,td{
-  text-align:left;padding:12px 14px;
-  font-size:0.85rem;
-  border-bottom:1px solid var(--gray-100);
-  white-space:nowrap;
+
+table { width: 100%; border-collapse: collapse; min-width: 760px; }
+
+th, td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray-200);
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
-th{
-  font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;
-  color:var(--gray-500);font-weight:600;
-  background:var(--gray-100);
+
+th { color: var(--gray-600); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; background: var(--gray-100); }
+
+tbody tr:last-child td { border-bottom: none; }
+
+.table-img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  background: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
 }
-tbody tr:hover{background:var(--gray-100);}
-@media (max-width:760px){
-  th:nth-child(1), td:nth-child(1){display:none;}
-  th:nth-child(3), td:nth-child(3){display:none;}
-  th:nth-child(4), td:nth-child(4){display:none;}
-  th:nth-child(6), td:nth-child(6){display:none;}
-  th:nth-child(7), td:nth-child(7){display:none;}
+
+.table-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.stock-controls { display: flex; align-items: center; gap: 8px; }
+
+.stock-controls button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
 }
-.cell-img{
-  position:relative;width:44px;height:44px;
-  background:var(--lavender-light);
+
+.tags-cell { display: flex; gap: 4px; flex-wrap: wrap; max-width: 180px; white-space: normal; }
+
+.tags-cell span { font-size: 0.7rem; background: var(--gray-100); padding: 2px 8px; }
+
+.status-badge { padding: 4px 10px; font-size: 0.72rem; font-weight: 600; display: inline-block; }
+
+.status-badge.ok { background: var(--success-bg); color: var(--success); }
+.status-badge.low { background: var(--warning-bg); color: var(--warning); }
+.status-badge.out { background: var(--danger-bg); color: var(--danger); }
+
+.action-btn {
+  background: none;
+  border: 1px solid var(--gray-200);
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  margin-right: 6px;
 }
-.cell-img .img-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
-.cell-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.cell-tags{display:flex;flex-wrap:wrap;gap:4px;max-width:160px;white-space:normal;}
-.mini-tag{font-size:0.68rem;border:1px solid var(--gray-200);padding:2px 6px;}
-.stock-control{display:flex;align-items:center;gap:8px;}
-.stock-control button{
-  width:24px;height:24px;border:1px solid var(--gray-300);font-size:0.9rem;
-  display:flex;align-items:center;justify-content:center;
-}
-.stock-control button:disabled{color:var(--gray-300);cursor:not-allowed;}
-.badge{
-  display:inline-block;font-size:0.72rem;font-weight:600;
-  padding:4px 10px;
-}
-.badge-green{background:var(--green-bg);color:var(--green);}
-.badge-amber{background:var(--amber-bg);color:var(--amber);}
-.badge-red{background:var(--red-bg);color:var(--red);}
-.row-actions{display:flex;gap:10px;}
-.link-btn{font-size:0.8rem;font-weight:600;color:var(--gray-700);}
-.link-btn:hover{color:var(--black);}
-.link-btn.danger{color:var(--red);}
+
+.action-btn.danger { color: var(--danger); border-color: var(--danger-bg); }
 
 /* Collections grid */
-.collections-grid{
-  display:grid;grid-template-columns:1fr;
-  gap:16px;
-}
-@media (min-width:640px){
-  .collections-grid{grid-template-columns:repeat(2,1fr);}
-}
-@media (min-width:960px){
-  .collections-grid{grid-template-columns:repeat(3,1fr);}
-}
-.collection-card{
-  background:var(--white);
-  border:1px solid var(--gray-200);
-  padding:18px;
-  display:flex;flex-direction:column;gap:6px;
-}
-.collection-card-name{font-family:var(--font-display);font-weight:600;font-size:1.1rem;}
-.collection-card-count{font-size:0.82rem;color:var(--gray-500);}
-.collection-card-actions{
-  display:flex;gap:14px;margin-top:10px;
-  padding-top:10px;border-top:1px solid var(--gray-100);
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
 }
 
-.hidden-section{display:none;}
+.collection-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.collection-card h3 { font-family: var(--font-display); font-size: 1.15rem; }
+
+.collection-card .count { font-size: 0.82rem; color: var(--gray-600); }
+
+.collection-card .card-actions { margin-top: 8px; display: flex; gap: 8px; }
 
 /* Modals */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(10,10,10,0.55);
-  z-index:400;display:none;align-items:center;justify-content:center;
-  padding:20px;
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  padding: 20px;
 }
-.modal-overlay.open{display:flex;}
-.modal{
-  background:var(--white);
-  width:100%;max-width:640px;max-height:90vh;overflow-y:auto;
-  padding:26px;position:relative;
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--white);
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 32px;
 }
-.modal h2{font-family:var(--font-display);font-weight:600;font-size:1.3rem;margin-bottom:20px;}
-.modal-close{position:absolute;top:18px;right:18px;width:32px;height:32px;font-size:1.2rem;}
-.modal-grid{
-  display:grid;grid-template-columns:1fr;gap:14px;
+
+@media (max-width: 640px) {
+  .modal { padding: 24px 18px; }
 }
-@media (min-width:560px){
-  .modal-grid{grid-template-columns:1fr 1fr;}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
-.field-full{grid-column:1/-1;}
-.form-group label{
-  display:block;font-size:0.78rem;font-weight:600;margin-bottom:6px;
+
+.modal h2 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 22px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
-.form-group input,.form-group select,.form-group textarea{
-  width:100%;border:1px solid var(--gray-300);padding:10px 12px;font-size:0.88rem;
+
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
 }
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--black);}
-.image-preview{
-  margin-top:10px;width:100%;aspect-ratio:16/9;
-  background:var(--lavender-light);
-  position:relative;overflow:hidden;
-  display:none;
+
+.form-grid .full-width { grid-column: 1 / -1; }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+
+.form-group label { font-size: 0.8rem; font-weight: 600; }
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  border: 1px solid var(--gray-200);
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: var(--font-body);
 }
-.image-preview.show{display:block;}
-.image-preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.modal-submit{
-  width:100%;background:var(--black);color:var(--white);
-  padding:14px;font-weight:600;font-size:0.88rem;
-  margin-top:22px;
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { outline: none; border-color: var(--black); }
+
+.image-preview {
+  margin-top: 8px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 160px;
+  background: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+.modal-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-secondary {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  padding: 11px 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
 }
 
 /* Toast */
-.toast{
-  position:fixed;bottom:24px;right:24px;z-index:500;
-  padding:14px 22px;font-size:0.88rem;font-weight:500;color:var(--white);
-  background:var(--black);
-  transform:translateY(120%);opacity:0;
-  transition:transform 0.25s ease,opacity 0.25s ease;
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.error{background:var(--red);}
 
-@media (max-width:520px){
-  .modal{padding:18px;}
-  .content{padding:16px;}
+.toast {
+  background: var(--black);
+  color: var(--white);
+  padding: 15px 22px;
+  font-size: 0.85rem;
+  min-width: 220px;
+  animation: toast-in 0.3s ease;
 }
+
+.toast.error { background: var(--danger); }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .toast-container { left: 16px; right: 16px; bottom: 16px; }
+  .toast { min-width: 0; }
+}
+
+.empty-row td { text-align: center; color: var(--gray-600); padding: 32px 16px; }
 </style>
 </head>
 <body>
 
-<div class="app">
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="app-layout">
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">Yukly Store</div>
     <nav class="sidebar-nav">
-      <button class="sidebar-link active" data-section="products">Productos</button>
-      <button class="sidebar-link" data-section="collections">Colecciones</button>
+      <button class="sidebar-nav-item active" data-tab="productos">Productos</button>
+      <button class="sidebar-nav-item" data-tab="colecciones">Colecciones</button>
     </nav>
-    <button class="sidebar-logout" id="logoutBtn">Cerrar sesión</button>
+    <div class="sidebar-footer">
+      <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+    </div>
   </aside>
 
-  <div class="main">
+  <div class="main-content">
     <div class="topbar">
-      <button class="hamburger" id="hamburgerBtn" aria-label="Menú">&#9776;</button>
-      <h1 class="topbar-title" id="topbarTitle">Productos</h1>
-      <a href="index.html" target="_blank" class="view-store-link">Ver tienda &rarr;</a>
+      <div class="topbar-left">
+        <button class="hamburger-btn" id="hamburger-btn"><span></span><span></span><span></span></button>
+        <h1 id="topbar-title">Productos</h1>
+      </div>
+      <a class="view-store-link" href="index.html" target="_blank" rel="noopener">Ver tienda →</a>
     </div>
 
-    <div class="content">
-      <section id="productsSection">
-        <div class="section-header">
-          <h2>Productos</h2>
-          <button class="btn-primary" id="newProductBtn">+ Nuevo producto</button>
-        </div>
-
+    <div class="content-area">
+      <section class="tab-panel active" id="tab-productos">
         <div class="stats-grid">
           <div class="stat-card">
-            <div class="stat-value" id="statTotalProducts">0</div>
+            <div class="stat-value" id="stat-total-products">0</div>
             <div class="stat-label">Total de productos</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="statTotalCollections">0</div>
+            <div class="stat-value" id="stat-total-collections">0</div>
             <div class="stat-label">Total de colecciones</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="statSoldOut">0</div>
+            <div class="stat-value" id="stat-out-of-stock">0</div>
             <div class="stat-label">Productos agotados</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="statLowStock">0</div>
+            <div class="stat-value" id="stat-low-stock">0</div>
             <div class="stat-label">Stock bajo</div>
           </div>
+        </div>
+
+        <div class="section-header">
+          <h2>Productos</h2>
+          <button class="btn-primary" id="new-product-btn">+ Nuevo producto</button>
         </div>
 
         <div class="table-wrap">
@@ -359,539 +504,587 @@ tbody tr:hover{background:var(--gray-100);}
                 <th>Acciones</th>
               </tr>
             </thead>
-            <tbody id="productsTableBody"></tbody>
+            <tbody id="products-table-body"></tbody>
           </table>
         </div>
       </section>
 
-      <section id="collectionsSection" class="hidden-section">
+      <section class="tab-panel" id="tab-colecciones">
         <div class="section-header">
           <h2>Colecciones</h2>
-          <button class="btn-primary" id="newCollectionBtn">+ Nueva colección</button>
+          <button class="btn-primary" id="new-collection-btn">+ Nueva colección</button>
         </div>
-        <div class="collections-grid" id="collectionsGrid"></div>
+        <div class="collections-grid" id="collections-grid"></div>
       </section>
     </div>
   </div>
 </div>
 
 <!-- Product modal -->
-<div class="modal-overlay" id="productModalOverlay">
+<div class="modal-overlay" id="product-modal-overlay">
   <div class="modal">
-    <button class="modal-close" id="productModalClose">&times;</button>
-    <h2 id="productModalTitle">Nuevo producto</h2>
-    <form id="productForm">
-      <div class="modal-grid">
-        <div class="form-group field-full">
-          <label for="pName">Nombre *</label>
-          <input type="text" id="pName" required>
+    <button class="modal-close" id="product-modal-close">&times;</button>
+    <h2 id="product-modal-title">Nuevo producto</h2>
+    <form id="product-form">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="p-name">Nombre *</label>
+          <input type="text" id="p-name" required>
         </div>
         <div class="form-group">
-          <label for="pPrice">Precio (MXN) *</label>
-          <input type="number" id="pPrice" min="0" step="0.01" required>
+          <label for="p-price">Precio (MXN) *</label>
+          <input type="number" id="p-price" min="0" step="0.01" required>
         </div>
         <div class="form-group">
-          <label for="pStock">Stock *</label>
-          <input type="number" id="pStock" min="0" step="1" required>
+          <label for="p-stock">Stock *</label>
+          <input type="number" id="p-stock" min="0" step="1" required>
         </div>
         <div class="form-group">
-          <label for="pCollection">Colección *</label>
-          <select id="pCollection" required></select>
+          <label for="p-collection">Colección *</label>
+          <select id="p-collection" required></select>
         </div>
         <div class="form-group">
-          <label for="pBrand">Marca</label>
-          <input type="text" id="pBrand">
+          <label for="p-brand">Marca</label>
+          <input type="text" id="p-brand">
         </div>
-        <div class="form-group field-full">
-          <label for="pTags">Etiquetas (separadas por coma)</label>
-          <input type="text" id="pTags" placeholder="anime, kawaii, edición limitada">
+        <div class="form-group full-width">
+          <label for="p-tags">Etiquetas (separadas por coma)</label>
+          <input type="text" id="p-tags" placeholder="anime, kawaii">
         </div>
-        <div class="form-group field-full">
-          <label for="pDescription">Descripción</label>
-          <textarea id="pDescription" rows="3"></textarea>
+        <div class="form-group full-width">
+          <label for="p-description">Descripción</label>
+          <textarea id="p-description" rows="3"></textarea>
         </div>
-        <div class="form-group field-full">
-          <label for="pImage">URL de imagen</label>
-          <input type="url" id="pImage" placeholder="https://...">
-          <div class="image-preview" id="pImagePreview"><img id="pImagePreviewImg" alt=""></div>
+        <div class="form-group full-width">
+          <label for="p-image">URL de imagen</label>
+          <input type="url" id="p-image" placeholder="https://...">
+          <div class="image-preview" id="p-image-preview">
+            <span>🧸</span>
+          </div>
         </div>
       </div>
-      <button type="submit" class="modal-submit">Guardar producto</button>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="product-cancel-btn">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar</button>
+      </div>
     </form>
   </div>
 </div>
 
 <!-- Collection modal -->
-<div class="modal-overlay" id="collectionModalOverlay">
+<div class="modal-overlay" id="collection-modal-overlay">
   <div class="modal">
-    <button class="modal-close" id="collectionModalClose">&times;</button>
-    <h2 id="collectionModalTitle">Nueva colección</h2>
-    <form id="collectionForm">
-      <div class="form-group" style="margin-bottom:14px;">
-        <label for="cName">Nombre *</label>
-        <input type="text" id="cName" required>
+    <button class="modal-close" id="collection-modal-close">&times;</button>
+    <h2 id="collection-modal-title">Nueva colección</h2>
+    <form id="collection-form">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="c-name">Nombre *</label>
+          <input type="text" id="c-name" required>
+        </div>
+        <div class="form-group full-width">
+          <label for="c-description">Descripción</label>
+          <textarea id="c-description" rows="3"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label for="c-image">URL de imagen de portada</label>
+          <input type="url" id="c-image" placeholder="https://...">
+          <div class="image-preview" id="c-image-preview">
+            <span>🖼️</span>
+          </div>
+        </div>
       </div>
-      <div class="form-group" style="margin-bottom:14px;">
-        <label for="cDescription">Descripción</label>
-        <textarea id="cDescription" rows="3"></textarea>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="collection-cancel-btn">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar</button>
       </div>
-      <div class="form-group">
-        <label for="cImage">URL de imagen de portada</label>
-        <input type="url" id="cImage" placeholder="https://...">
-        <div class="image-preview" id="cImagePreview"><img id="cImagePreviewImg" alt=""></div>
-      </div>
-      <button type="submit" class="modal-submit">Guardar colección</button>
     </form>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast-container" id="toast-container"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc,
-  serverTimestamp, query, orderBy
+  getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAa-LNMZC9xqzUO8lpcVDnNC_Mhf72BFE4",
-  authDomain: "e-commer-87036.firebaseapp.com",
-  projectId: "e-commer-87036",
-  storageBucket: "e-commer-87036.firebasestorage.app",
-  messagingSenderId: "820920218503",
-  appId: "1:820920218503:web:97d3f10b6041d2f0c89922"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_AUTH_DOMAIN",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_STORAGE_BUCKET",
+  messagingSenderId: "TU_MESSAGING_SENDER_ID",
+  appId: "TU_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-onAuthStateChanged(auth, user => {
-  if(!user){
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
     window.location.href = "admin-login.html";
   }
 });
 
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "admin-login.html";
-});
-
-/* ---------- State ---------- */
-
-let collections = [];
-let products = [];
+let productsData = [];
+let collectionsData = [];
 let editingProductId = null;
 let editingCollectionId = null;
 
-const el = {
+const els = {
   sidebar: document.getElementById("sidebar"),
-  sidebarOverlay: document.getElementById("sidebarOverlay"),
-  hamburgerBtn: document.getElementById("hamburgerBtn"),
-  topbarTitle: document.getElementById("topbarTitle"),
-  productsSection: document.getElementById("productsSection"),
-  collectionsSection: document.getElementById("collectionsSection"),
-  statTotalProducts: document.getElementById("statTotalProducts"),
-  statTotalCollections: document.getElementById("statTotalCollections"),
-  statSoldOut: document.getElementById("statSoldOut"),
-  statLowStock: document.getElementById("statLowStock"),
-  productsTableBody: document.getElementById("productsTableBody"),
-  collectionsGrid: document.getElementById("collectionsGrid"),
-  newProductBtn: document.getElementById("newProductBtn"),
-  newCollectionBtn: document.getElementById("newCollectionBtn"),
-  productModalOverlay: document.getElementById("productModalOverlay"),
-  productModalTitle: document.getElementById("productModalTitle"),
-  productModalClose: document.getElementById("productModalClose"),
-  productForm: document.getElementById("productForm"),
-  pName: document.getElementById("pName"),
-  pPrice: document.getElementById("pPrice"),
-  pStock: document.getElementById("pStock"),
-  pCollection: document.getElementById("pCollection"),
-  pBrand: document.getElementById("pBrand"),
-  pTags: document.getElementById("pTags"),
-  pDescription: document.getElementById("pDescription"),
-  pImage: document.getElementById("pImage"),
-  pImagePreview: document.getElementById("pImagePreview"),
-  pImagePreviewImg: document.getElementById("pImagePreviewImg"),
-  collectionModalOverlay: document.getElementById("collectionModalOverlay"),
-  collectionModalTitle: document.getElementById("collectionModalTitle"),
-  collectionModalClose: document.getElementById("collectionModalClose"),
-  collectionForm: document.getElementById("collectionForm"),
-  cName: document.getElementById("cName"),
-  cDescription: document.getElementById("cDescription"),
-  cImage: document.getElementById("cImage"),
-  cImagePreview: document.getElementById("cImagePreview"),
-  cImagePreviewImg: document.getElementById("cImagePreviewImg"),
-  toast: document.getElementById("toast")
+  sidebarOverlay: document.getElementById("sidebar-overlay"),
+  hamburgerBtn: document.getElementById("hamburger-btn"),
+  navItems: document.querySelectorAll(".sidebar-nav-item"),
+  topbarTitle: document.getElementById("topbar-title"),
+  tabProductos: document.getElementById("tab-productos"),
+  tabColecciones: document.getElementById("tab-colecciones"),
+  logoutBtn: document.getElementById("logout-btn"),
+
+  statTotalProducts: document.getElementById("stat-total-products"),
+  statTotalCollections: document.getElementById("stat-total-collections"),
+  statOutOfStock: document.getElementById("stat-out-of-stock"),
+  statLowStock: document.getElementById("stat-low-stock"),
+
+  productsTableBody: document.getElementById("products-table-body"),
+  collectionsGrid: document.getElementById("collections-grid"),
+
+  newProductBtn: document.getElementById("new-product-btn"),
+  newCollectionBtn: document.getElementById("new-collection-btn"),
+
+  productModalOverlay: document.getElementById("product-modal-overlay"),
+  productModalClose: document.getElementById("product-modal-close"),
+  productModalTitle: document.getElementById("product-modal-title"),
+  productForm: document.getElementById("product-form"),
+  productCancelBtn: document.getElementById("product-cancel-btn"),
+  pName: document.getElementById("p-name"),
+  pPrice: document.getElementById("p-price"),
+  pStock: document.getElementById("p-stock"),
+  pCollection: document.getElementById("p-collection"),
+  pBrand: document.getElementById("p-brand"),
+  pTags: document.getElementById("p-tags"),
+  pDescription: document.getElementById("p-description"),
+  pImage: document.getElementById("p-image"),
+  pImagePreview: document.getElementById("p-image-preview"),
+
+  collectionModalOverlay: document.getElementById("collection-modal-overlay"),
+  collectionModalClose: document.getElementById("collection-modal-close"),
+  collectionModalTitle: document.getElementById("collection-modal-title"),
+  collectionForm: document.getElementById("collection-form"),
+  collectionCancelBtn: document.getElementById("collection-cancel-btn"),
+  cName: document.getElementById("c-name"),
+  cDescription: document.getElementById("c-description"),
+  cImage: document.getElementById("c-image"),
+  cImagePreview: document.getElementById("c-image-preview"),
+
+  toastContainer: document.getElementById("toast-container")
 };
 
-function escapeHtml(str){
-  return String(str ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
+function showToast(msg, type) {
+  const toast = document.createElement("div");
+  toast.className = "toast" + (type === "error" ? " error" : "");
+  toast.textContent = msg;
+  els.toastContainer.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
 }
 
-function formatPrice(n){
-  return "$" + Number(n).toLocaleString("es-MX", { maximumFractionDigits: 2 });
+function formatPrice(n) {
+  return "$" + Number(n).toLocaleString("es-MX", { maximumFractionDigits: 0 });
 }
 
-function showToast(msg, isError){
-  el.toast.textContent = msg;
-  el.toast.classList.toggle("error", !!isError);
-  el.toast.classList.add("show");
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => el.toast.classList.remove("show"), 3000);
+/* Sidebar / tabs */
+function openSidebar() {
+  els.sidebar.classList.add("open");
+  els.sidebarOverlay.classList.add("open");
 }
-
-function imageBlock(imageUrl, altText, emoji){
-  const safeAlt = escapeHtml(altText);
-  const img = imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${safeAlt}" loading="lazy" onerror="this.onerror=null;this.remove();">` : "";
-  return `<span class="img-fallback">${emoji}</span>${img}`;
+function closeSidebar() {
+  els.sidebar.classList.remove("open");
+  els.sidebarOverlay.classList.remove("open");
 }
+els.hamburgerBtn.onclick = openSidebar;
+els.sidebarOverlay.onclick = closeSidebar;
 
-function collectionName(id){
-  const c = collections.find(c => c.id === id);
-  return c ? c.name : "—";
-}
-
-/* ---------- Navigation ---------- */
-
-document.querySelectorAll(".sidebar-link").forEach(btn => {
+els.navItems.forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".sidebar-link").forEach(b => b.classList.remove("active"));
+    els.navItems.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    const section = btn.dataset.section;
-    el.topbarTitle.textContent = section === "products" ? "Productos" : "Colecciones";
-    el.productsSection.classList.toggle("hidden-section", section !== "products");
-    el.collectionsSection.classList.toggle("hidden-section", section !== "collections");
+    const tab = btn.dataset.tab;
+    els.tabProductos.classList.toggle("active", tab === "productos");
+    els.tabColecciones.classList.toggle("active", tab === "colecciones");
+    els.topbarTitle.textContent = tab === "productos" ? "Productos" : "Colecciones";
     closeSidebar();
   });
 });
 
-function openSidebar(){
-  el.sidebar.classList.add("open");
-  el.sidebarOverlay.classList.add("open");
+els.logoutBtn.onclick = async () => {
+  await signOut(auth);
+  window.location.href = "admin-login.html";
+};
+
+/* Collection lookup */
+function collectionById(id) {
+  return collectionsData.find((c) => c.id === id);
 }
-function closeSidebar(){
-  el.sidebar.classList.remove("open");
-  el.sidebarOverlay.classList.remove("open");
+
+function populateCollectionSelect() {
+  const current = els.pCollection.value;
+  els.pCollection.innerHTML = "";
+  collectionsData.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = c.name;
+    els.pCollection.appendChild(opt);
+  });
+  if (current) els.pCollection.value = current;
 }
-el.hamburgerBtn.addEventListener("click", openSidebar);
-el.sidebarOverlay.addEventListener("click", closeSidebar);
 
-/* ---------- Firestore listeners ---------- */
-
-onSnapshot(query(collection(db, "collections"), orderBy("name")), snap => {
-  collections = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  renderCollectionSelect();
-  renderCollectionsGrid();
-  renderStats();
-});
-
-onSnapshot(collection(db, "products"), snap => {
-  products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  renderProductsTable();
-  renderCollectionsGrid();
-  renderStats();
-});
-
-/* ---------- Stats ---------- */
-
-function renderStats(){
-  el.statTotalProducts.textContent = products.length;
-  el.statTotalCollections.textContent = collections.length;
-  el.statSoldOut.textContent = products.filter(p => (Number(p.stock) || 0) === 0).length;
-  el.statLowStock.textContent = products.filter(p => {
+/* Stats */
+function renderStats() {
+  els.statTotalProducts.textContent = productsData.length;
+  els.statTotalCollections.textContent = collectionsData.length;
+  els.statOutOfStock.textContent = productsData.filter((p) => (Number(p.stock) || 0) === 0).length;
+  els.statLowStock.textContent = productsData.filter((p) => {
     const s = Number(p.stock) || 0;
     return s > 0 && s <= 5;
   }).length;
 }
 
-/* ---------- Products table ---------- */
+/* Products table */
+function renderProductsTable() {
+  els.productsTableBody.innerHTML = "";
 
-function stockBadge(stock){
-  if(stock === 0) return `<span class="badge badge-red">Agotado</span>`;
-  if(stock <= 5) return `<span class="badge badge-amber">Stock bajo</span>`;
-  return `<span class="badge badge-green">Disponible</span>`;
-}
-
-function renderProductsTable(){
-  if(products.length === 0){
-    el.productsTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--gray-500);padding:30px;">No hay productos registrados.</td></tr>`;
+  if (productsData.length === 0) {
+    const tr = document.createElement("tr");
+    tr.className = "empty-row";
+    tr.innerHTML = '<td colspan="9">No hay productos registrados.</td>';
+    els.productsTableBody.appendChild(tr);
     return;
   }
 
-  el.productsTableBody.innerHTML = products.map(p => {
-    const stock = Number(p.stock) || 0;
-    const tags = p.tags || [];
-    return `
-      <tr data-id="${p.id}">
-        <td><div class="cell-img">${imageBlock(p.image, p.name, "📦")}</div></td>
-        <td>${escapeHtml(p.name)}</td>
-        <td>${escapeHtml(collectionName(p.collectionId))}</td>
-        <td>${formatPrice(p.price)}</td>
-        <td>
-          <div class="stock-control">
-            <button class="stock-minus" data-id="${p.id}" ${stock <= 0 ? "disabled" : ""}>−</button>
-            <span>${stock}</span>
-            <button class="stock-plus" data-id="${p.id}">+</button>
-          </div>
-        </td>
-        <td>${escapeHtml(p.brand || "—")}</td>
-        <td><div class="cell-tags">${tags.map(t => `<span class="mini-tag">${escapeHtml(t)}</span>`).join("")}</div></td>
-        <td>${stockBadge(stock)}</td>
-        <td>
-          <div class="row-actions">
-            <button class="link-btn edit-product" data-id="${p.id}">Editar</button>
-            <button class="link-btn danger delete-product" data-id="${p.id}">Eliminar</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join("");
+  productsData.forEach((product) => {
+    const tr = document.createElement("tr");
+    const stock = Number(product.stock) || 0;
+    const coll = collectionById(product.collectionId);
 
-  el.productsTableBody.querySelectorAll(".stock-minus").forEach(btn => {
-    btn.addEventListener("click", () => adjustStock(btn.dataset.id, -1));
-  });
-  el.productsTableBody.querySelectorAll(".stock-plus").forEach(btn => {
-    btn.addEventListener("click", () => adjustStock(btn.dataset.id, 1));
-  });
-  el.productsTableBody.querySelectorAll(".edit-product").forEach(btn => {
-    btn.addEventListener("click", () => openProductModal(btn.dataset.id));
-  });
-  el.productsTableBody.querySelectorAll(".delete-product").forEach(btn => {
-    btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
-  });
-}
-
-async function adjustStock(id, delta){
-  const p = products.find(p => p.id === id);
-  if(!p) return;
-  const newStock = Math.max(0, (Number(p.stock) || 0) + delta);
-  try{
-    await updateDoc(doc(db, "products", id), { stock: newStock });
-  }catch(e){
-    showToast("Error al actualizar el stock", true);
-  }
-}
-
-async function deleteProduct(id){
-  if(!confirm("¿Eliminar este producto? Esta acción no se puede deshacer.")) return;
-  try{
-    await deleteDoc(doc(db, "products", id));
-    showToast("Producto eliminado");
-  }catch(e){
-    showToast("Error al eliminar el producto", true);
-  }
-}
-
-/* ---------- Collections grid ---------- */
-
-function renderCollectionsGrid(){
-  if(collections.length === 0){
-    el.collectionsGrid.innerHTML = `<div style="color:var(--gray-500);padding:30px;">No hay colecciones registradas.</div>`;
-    return;
-  }
-
-  el.collectionsGrid.innerHTML = collections.map(c => {
-    const count = products.filter(p => p.collectionId === c.id).length;
-    return `
-      <div class="collection-card" data-id="${c.id}">
-        <span class="collection-card-name">${escapeHtml(c.name)}</span>
-        <span class="collection-card-count">${count} producto${count === 1 ? "" : "s"} asignado${count === 1 ? "" : "s"}</span>
-        <div class="collection-card-actions">
-          <button class="link-btn edit-collection" data-id="${c.id}">Editar</button>
-          <button class="link-btn danger delete-collection" data-id="${c.id}">Eliminar</button>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  el.collectionsGrid.querySelectorAll(".edit-collection").forEach(btn => {
-    btn.addEventListener("click", () => openCollectionModal(btn.dataset.id));
-  });
-  el.collectionsGrid.querySelectorAll(".delete-collection").forEach(btn => {
-    btn.addEventListener("click", () => deleteCollection(btn.dataset.id));
-  });
-}
-
-async function deleteCollection(id){
-  const count = products.filter(p => p.collectionId === id).length;
-  if(count > 0){
-    showToast("No puedes eliminar una colección con productos asignados", true);
-    return;
-  }
-  if(!confirm("¿Eliminar esta colección? Esta acción no se puede deshacer.")) return;
-  try{
-    await deleteDoc(doc(db, "collections", id));
-    showToast("Colección eliminada");
-  }catch(e){
-    showToast("Error al eliminar la colección", true);
-  }
-}
-
-/* ---------- Product modal ---------- */
-
-function renderCollectionSelect(){
-  const current = el.pCollection.value;
-  el.pCollection.innerHTML = `<option value="" disabled ${!current ? "selected" : ""}>Selecciona una colección</option>` +
-    collections.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
-  if(current && collections.some(c => c.id === current)){
-    el.pCollection.value = current;
-  }
-}
-
-function openProductModal(id){
-  editingProductId = id || null;
-  el.productForm.reset();
-  el.pImagePreview.classList.remove("show");
-  renderCollectionSelect();
-
-  if(id){
-    const p = products.find(p => p.id === id);
-    if(!p) return;
-    el.productModalTitle.textContent = "Editar producto";
-    el.pName.value = p.name || "";
-    el.pPrice.value = p.price ?? "";
-    el.pStock.value = p.stock ?? "";
-    el.pCollection.value = p.collectionId || "";
-    el.pBrand.value = p.brand || "";
-    el.pTags.value = (p.tags || []).join(", ");
-    el.pDescription.value = p.description || "";
-    el.pImage.value = p.image || "";
-    if(p.image){
-      el.pImagePreviewImg.src = p.image;
-      el.pImagePreview.classList.add("show");
+    const imgTd = document.createElement("td");
+    const imgBox = document.createElement("div");
+    imgBox.className = "table-img";
+    if (product.image) {
+      const img = document.createElement("img");
+      img.src = product.image;
+      img.alt = "";
+      img.onerror = () => { img.remove(); imgBox.textContent = "📦"; };
+      imgBox.appendChild(img);
+    } else {
+      imgBox.textContent = "📦";
     }
-  }else{
-    el.productModalTitle.textContent = "Nuevo producto";
-  }
+    imgTd.appendChild(imgBox);
+    tr.appendChild(imgTd);
 
-  el.productModalOverlay.classList.add("open");
+    const nameTd = document.createElement("td");
+    nameTd.textContent = product.name;
+    tr.appendChild(nameTd);
+
+    const collTd = document.createElement("td");
+    collTd.textContent = coll ? coll.name : "—";
+    tr.appendChild(collTd);
+
+    const priceTd = document.createElement("td");
+    priceTd.textContent = formatPrice(product.price);
+    tr.appendChild(priceTd);
+
+    const stockTd = document.createElement("td");
+    const stockControls = document.createElement("div");
+    stockControls.className = "stock-controls";
+    const minusBtn = document.createElement("button");
+    minusBtn.type = "button";
+    minusBtn.textContent = "−";
+    minusBtn.onclick = () => adjustStock(product, -1);
+    const stockSpan = document.createElement("span");
+    stockSpan.textContent = stock;
+    const plusBtn = document.createElement("button");
+    plusBtn.type = "button";
+    plusBtn.textContent = "+";
+    plusBtn.onclick = () => adjustStock(product, 1);
+    stockControls.appendChild(minusBtn);
+    stockControls.appendChild(stockSpan);
+    stockControls.appendChild(plusBtn);
+    stockTd.appendChild(stockControls);
+    tr.appendChild(stockTd);
+
+    const brandTd = document.createElement("td");
+    brandTd.textContent = product.brand || "—";
+    tr.appendChild(brandTd);
+
+    const tagsTd = document.createElement("td");
+    const tagsWrap = document.createElement("div");
+    tagsWrap.className = "tags-cell";
+    (product.tags || []).forEach((t) => {
+      const span = document.createElement("span");
+      span.textContent = t;
+      tagsWrap.appendChild(span);
+    });
+    tagsTd.appendChild(tagsWrap);
+    tr.appendChild(tagsTd);
+
+    const statusTd = document.createElement("td");
+    const badge = document.createElement("span");
+    if (stock === 0) {
+      badge.className = "status-badge out";
+      badge.textContent = "Agotado";
+    } else if (stock <= 5) {
+      badge.className = "status-badge low";
+      badge.textContent = "Stock bajo";
+    } else {
+      badge.className = "status-badge ok";
+      badge.textContent = "Disponible";
+    }
+    statusTd.appendChild(badge);
+    tr.appendChild(statusTd);
+
+    const actionsTd = document.createElement("td");
+    const editBtn = document.createElement("button");
+    editBtn.className = "action-btn";
+    editBtn.textContent = "Editar";
+    editBtn.onclick = () => openProductModal(product);
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "action-btn danger";
+    deleteBtn.textContent = "Eliminar";
+    deleteBtn.onclick = () => deleteProduct(product);
+    actionsTd.appendChild(editBtn);
+    actionsTd.appendChild(deleteBtn);
+    tr.appendChild(actionsTd);
+
+    els.productsTableBody.appendChild(tr);
+  });
 }
 
-function closeProductModal(){
-  el.productModalOverlay.classList.remove("open");
+async function adjustStock(product, delta) {
+  const current = Number(product.stock) || 0;
+  const next = Math.max(0, current + delta);
+  try {
+    await updateDoc(doc(db, "products", product.id), { stock: next });
+  } catch (e) {
+    showToast("No se pudo actualizar el stock.", "error");
+  }
+}
+
+async function deleteProduct(product) {
+  if (!confirm("¿Eliminar el producto \"" + product.name + "\"? Esta acción no se puede deshacer.")) return;
+  try {
+    await deleteDoc(doc(db, "products", product.id));
+    showToast("Producto eliminado.");
+  } catch (e) {
+    showToast("No se pudo eliminar el producto.", "error");
+  }
+}
+
+/* Collections grid */
+function renderCollectionsGrid() {
+  els.collectionsGrid.innerHTML = "";
+
+  if (collectionsData.length === 0) {
+    const empty = document.createElement("p");
+    empty.textContent = "No hay colecciones registradas.";
+    els.collectionsGrid.appendChild(empty);
+    return;
+  }
+
+  collectionsData.forEach((coll) => {
+    const count = productsData.filter((p) => p.collectionId === coll.id).length;
+
+    const card = document.createElement("div");
+    card.className = "collection-card";
+
+    const name = document.createElement("h3");
+    name.textContent = coll.name;
+    card.appendChild(name);
+
+    const countLine = document.createElement("span");
+    countLine.className = "count";
+    countLine.textContent = count + (count === 1 ? " producto asignado" : " productos asignados");
+    card.appendChild(countLine);
+
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+
+    const editBtn = document.createElement("button");
+    editBtn.className = "action-btn";
+    editBtn.textContent = "Editar";
+    editBtn.onclick = () => openCollectionModal(coll);
+    actions.appendChild(editBtn);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "action-btn danger";
+    deleteBtn.textContent = "Eliminar";
+    deleteBtn.onclick = () => deleteCollection(coll, count);
+    actions.appendChild(deleteBtn);
+
+    card.appendChild(actions);
+    els.collectionsGrid.appendChild(card);
+  });
+}
+
+async function deleteCollection(coll, count) {
+  if (count > 0) {
+    showToast("No puedes eliminar una colección con productos asignados.", "error");
+    return;
+  }
+  if (!confirm("¿Eliminar la colección \"" + coll.name + "\"?")) return;
+  try {
+    await deleteDoc(doc(db, "collections", coll.id));
+    showToast("Colección eliminada.");
+  } catch (e) {
+    showToast("No se pudo eliminar la colección.", "error");
+  }
+}
+
+/* Product modal */
+function openProductModal(product) {
+  editingProductId = product ? product.id : null;
+  els.productModalTitle.textContent = product ? "Editar producto" : "Nuevo producto";
+  populateCollectionSelect();
+
+  els.pName.value = product ? product.name || "" : "";
+  els.pPrice.value = product ? product.price ?? "" : "";
+  els.pStock.value = product ? product.stock ?? "" : "";
+  els.pCollection.value = product ? product.collectionId || "" : (collectionsData[0] ? collectionsData[0].id : "");
+  els.pBrand.value = product ? product.brand || "" : "";
+  els.pTags.value = product && product.tags ? product.tags.join(", ") : "";
+  els.pDescription.value = product ? product.description || "" : "";
+  els.pImage.value = product ? product.image || "" : "";
+  updateImagePreview(els.pImage.value, els.pImagePreview, "🧸");
+
+  els.productModalOverlay.classList.add("open");
+}
+
+function closeProductModal() {
+  els.productModalOverlay.classList.remove("open");
+  els.productForm.reset();
   editingProductId = null;
 }
 
-el.newProductBtn.addEventListener("click", () => openProductModal(null));
-el.productModalClose.addEventListener("click", closeProductModal);
-el.productModalOverlay.addEventListener("click", e => {
-  if(e.target === el.productModalOverlay) closeProductModal();
-});
-
-el.pImage.addEventListener("input", () => {
-  const url = el.pImage.value.trim();
-  if(url){
-    el.pImagePreviewImg.src = url;
-    el.pImagePreview.classList.add("show");
-  }else{
-    el.pImagePreview.classList.remove("show");
+function updateImagePreview(url, container, fallbackEmoji) {
+  container.innerHTML = "";
+  if (!url) {
+    container.innerHTML = "<span>" + fallbackEmoji + "</span>";
+    return;
   }
-});
-
-el.productForm.addEventListener("submit", async e => {
-  e.preventDefault();
-
-  const tags = el.pTags.value.split(",").map(t => t.trim()).filter(Boolean);
-
-  const data = {
-    name: el.pName.value.trim(),
-    price: parseFloat(el.pPrice.value) || 0,
-    stock: parseInt(el.pStock.value, 10) || 0,
-    collectionId: el.pCollection.value,
-    brand: el.pBrand.value.trim(),
-    tags,
-    description: el.pDescription.value.trim(),
-    image: el.pImage.value.trim()
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "";
+  img.onerror = () => {
+    container.innerHTML = "<span>" + fallbackEmoji + "</span>";
   };
-
-  try{
-    if(editingProductId){
-      await updateDoc(doc(db, "products", editingProductId), data);
-      showToast("Producto actualizado");
-    }else{
-      data.createdAt = serverTimestamp();
-      await addDoc(collection(db, "products"), data);
-      showToast("Producto creado");
-    }
-    closeProductModal();
-  }catch(err){
-    showToast("Error al guardar el producto", true);
-  }
-});
-
-/* ---------- Collection modal ---------- */
-
-function openCollectionModal(id){
-  editingCollectionId = id || null;
-  el.collectionForm.reset();
-  el.cImagePreview.classList.remove("show");
-
-  if(id){
-    const c = collections.find(c => c.id === id);
-    if(!c) return;
-    el.collectionModalTitle.textContent = "Editar colección";
-    el.cName.value = c.name || "";
-    el.cDescription.value = c.description || "";
-    el.cImage.value = c.image || "";
-    if(c.image){
-      el.cImagePreviewImg.src = c.image;
-      el.cImagePreview.classList.add("show");
-    }
-  }else{
-    el.collectionModalTitle.textContent = "Nueva colección";
-  }
-
-  el.collectionModalOverlay.classList.add("open");
+  container.appendChild(img);
 }
 
-function closeCollectionModal(){
-  el.collectionModalOverlay.classList.remove("open");
+els.pImage.addEventListener("input", () => updateImagePreview(els.pImage.value, els.pImagePreview, "🧸"));
+
+els.newProductBtn.onclick = () => openProductModal(null);
+els.productModalClose.onclick = closeProductModal;
+els.productCancelBtn.onclick = closeProductModal;
+els.productModalOverlay.addEventListener("click", (e) => {
+  if (e.target === els.productModalOverlay) closeProductModal();
+});
+
+els.productForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const data = {
+    name: els.pName.value.trim(),
+    price: Number(els.pPrice.value) || 0,
+    stock: Number(els.pStock.value) || 0,
+    collectionId: els.pCollection.value,
+    brand: els.pBrand.value.trim(),
+    tags: els.pTags.value.split(",").map((t) => t.trim()).filter(Boolean),
+    description: els.pDescription.value.trim(),
+    image: els.pImage.value.trim()
+  };
+
+  try {
+    if (editingProductId) {
+      await updateDoc(doc(db, "products", editingProductId), data);
+      showToast("Producto actualizado.");
+    } else {
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db, "products"), data);
+      showToast("Producto creado.");
+    }
+    closeProductModal();
+  } catch (err) {
+    showToast("No se pudo guardar el producto.", "error");
+  }
+});
+
+/* Collection modal */
+function openCollectionModal(coll) {
+  editingCollectionId = coll ? coll.id : null;
+  els.collectionModalTitle.textContent = coll ? "Editar colección" : "Nueva colección";
+
+  els.cName.value = coll ? coll.name || "" : "";
+  els.cDescription.value = coll ? coll.description || "" : "";
+  els.cImage.value = coll ? coll.image || "" : "";
+  updateImagePreview(els.cImage.value, els.cImagePreview, "🖼️");
+
+  els.collectionModalOverlay.classList.add("open");
+}
+
+function closeCollectionModal() {
+  els.collectionModalOverlay.classList.remove("open");
+  els.collectionForm.reset();
   editingCollectionId = null;
 }
 
-el.newCollectionBtn.addEventListener("click", () => openCollectionModal(null));
-el.collectionModalClose.addEventListener("click", closeCollectionModal);
-el.collectionModalOverlay.addEventListener("click", e => {
-  if(e.target === el.collectionModalOverlay) closeCollectionModal();
+els.cImage.addEventListener("input", () => updateImagePreview(els.cImage.value, els.cImagePreview, "🖼️"));
+
+els.newCollectionBtn.onclick = () => openCollectionModal(null);
+els.collectionModalClose.onclick = closeCollectionModal;
+els.collectionCancelBtn.onclick = closeCollectionModal;
+els.collectionModalOverlay.addEventListener("click", (e) => {
+  if (e.target === els.collectionModalOverlay) closeCollectionModal();
 });
 
-el.cImage.addEventListener("input", () => {
-  const url = el.cImage.value.trim();
-  if(url){
-    el.cImagePreviewImg.src = url;
-    el.cImagePreview.classList.add("show");
-  }else{
-    el.cImagePreview.classList.remove("show");
-  }
-});
-
-el.collectionForm.addEventListener("submit", async e => {
+els.collectionForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const data = {
-    name: el.cName.value.trim(),
-    description: el.cDescription.value.trim(),
-    image: el.cImage.value.trim()
+    name: els.cName.value.trim(),
+    description: els.cDescription.value.trim(),
+    image: els.cImage.value.trim()
   };
 
-  try{
-    if(editingCollectionId){
+  try {
+    if (editingCollectionId) {
       await updateDoc(doc(db, "collections", editingCollectionId), data);
-      showToast("Colección actualizada");
-    }else{
+      showToast("Colección actualizada.");
+    } else {
       data.createdAt = serverTimestamp();
       await addDoc(collection(db, "collections"), data);
-      showToast("Colección creada");
+      showToast("Colección creada.");
     }
     closeCollectionModal();
-  }catch(err){
-    showToast("Error al guardar la colección", true);
+  } catch (err) {
+    showToast("No se pudo guardar la colección.", "error");
   }
+});
+
+/* Realtime listeners */
+onSnapshot(collection(db, "collections"), (snap) => {
+  collectionsData = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  populateCollectionSelect();
+  renderStats();
+  renderCollectionsGrid();
+  renderProductsTable();
+});
+
+onSnapshot(collection(db, "products"), (snap) => {
+  productsData = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  renderStats();
+  renderProductsTable();
+  renderCollectionsGrid();
 });
 </script>
 </body>
