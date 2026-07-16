@@ -180,6 +180,13 @@ th{
   background:var(--gray-100);
 }
 tbody tr:hover{background:var(--gray-100);}
+@media (max-width:760px){
+  th:nth-child(1), td:nth-child(1){display:none;}
+  th:nth-child(3), td:nth-child(3){display:none;}
+  th:nth-child(4), td:nth-child(4){display:none;}
+  th:nth-child(6), td:nth-child(6){display:none;}
+  th:nth-child(7), td:nth-child(7){display:none;}
+}
 .cell-img{
   position:relative;width:44px;height:44px;
   background:var(--lavender-light);
