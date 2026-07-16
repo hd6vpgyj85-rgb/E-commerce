@@ -1073,6 +1073,16 @@ onSnapshot(query(collection(db, "collections"), orderBy("name")), snap => {
 
 onSnapshot(collection(db, "products"), snap => {
   products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  // Re-render when products update to show correct counts and product lists
+  renderCollections();
+  if(currentView === "collection" && currentCollectionId){
+    const colProducts = products.filter(p => p.collectionId === currentCollectionId);
+    renderCollectionPageProducts(colProducts);
+  }
+  if(currentView === "product-detail" && currentDetailProductId){
+    const p = products.find(p => p.id === currentDetailProductId);
+    if(p) renderProductDetailPage(p);
+  }
 });
 
 /* ---------- Collections grid ---------- */
