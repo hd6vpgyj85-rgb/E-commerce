@@ -895,7 +895,7 @@ let products = [];
 let cart = loadCart();
 let searchMode = false;
 let searchTerm = "";
-let currentView = "home"; // "home" or "collection"
+let currentView = "home"; // "home", "collection", or "product-detail"
 let currentCollectionId = null;
 
 const el = {
@@ -1054,6 +1054,149 @@ function closeCollectionPage(){
   window.scrollTo(0, 0);
 }
 
+/* ---------- Product Detail Page ---------- */
+
+let currentDetailProductId = null;
+
+function openProductDetailPage(productId){
+  const p = products.find(p => p.id === productId);
+  if(!p) return;
+
+  currentView = "product-detail";
+  currentDetailProductId = productId;
+
+  el.hero.classList.add("hidden");
+  el.collectionsSection.classList.remove("active");
+  el.collectionPage.classList.remove("active");
+  el.productDetailPage.classList.add("active");
+
+  renderProductDetailPage(p);
+  window.scrollTo(0, 0);
+}
+
+function closeProductDetailPage(){
+  currentView = "home";
+  currentDetailProductId = null;
+
+  el.hero.classList.remove("hidden");
+  el.productDetailPage.classList.remove("active");
+  el.collectionsSection.classList.add("active");
+
+  window.scrollTo(0, 0);
+}
+
+function renderProductDetailPage(product){
+  const collection = collections.find(c => c.id === product.collectionId);
+
+  // Breadcrumb
+  el.productBreadcrumb.innerHTML = `
+    <span style="cursor:pointer;color:var(--pink-price);" onclick="closeProductDetailPage()">Inicio</span>
+    / <span onclick="if(currentView==='product-detail')openCollectionPage('${product.collectionId}')" style="cursor:pointer;color:var(--pink-price);">Productos</span>
+    / <span>${escapeHtml(product.name)}</span>
+  `;
+
+  // Main info
+  el.productInfoTitle.textContent = escapeHtml(product.name);
+  el.productInfoPrice.textContent = formatPrice(product.price);
+  el.productInfoDesc.textContent = escapeHtml(product.description || "");
+
+  // Note
+  if(product.note){
+    el.productInfoNote.textContent = escapeHtml(product.note);
+    el.productInfoNote.style.display = "block";
+  }else{
+    el.productInfoNote.style.display = "none";
+  }
+
+  // Main image (use the product image, or array if multiple)
+  const images = Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []);
+  if(images.length > 0){
+    el.productMainImage.innerHTML = `<img src="${escapeHtml(images[0])}" alt="${escapeHtml(product.name)}" onerror="this.parentElement.innerHTML='<div class=img-fallback>🧸</div>';">`;
+  }else{
+    el.productMainImage.innerHTML = '<div class="img-fallback">🧸</div>';
+  }
+
+  // Thumbnails
+  if(images.length > 1){
+    el.productThumbnails.innerHTML = images.map((img, idx) => `
+      <div class="product-thumbnail ${idx === 0 ? 'active' : ''}" data-idx="${idx}">
+        <img src="${escapeHtml(img)}" alt="Imagen ${idx + 1}" onerror="this.parentElement.style.opacity='0.5';">
+      </div>
+    `).join("");
+
+    el.productThumbnails.querySelectorAll(".product-thumbnail").forEach(thumb => {
+      thumb.addEventListener("click", () => {
+        const idx = parseInt(thumb.dataset.idx);
+        el.productMainImage.innerHTML = `<img src="${escapeHtml(images[idx])}" alt="${escapeHtml(product.name)}" onerror="this.parentElement.innerHTML='<div class=img-fallback>🧸</div>';">`;
+
+        el.productThumbnails.querySelectorAll(".product-thumbnail").forEach(t => t.classList.remove("active"));
+        thumb.classList.add("active");
+      });
+    });
+  }else{
+    el.productThumbnails.innerHTML = "";
+  }
+
+  // Action button
+  const stock = Number(product.stock) || 0;
+  el.productInfoAction.disabled = stock === 0;
+  el.productInfoAction.textContent = stock === 0 ? "Agotado" : "Comprar por WhatsApp";
+
+  el.productInfoAction.onclick = () => {
+    if(stock > 0){
+      addToCart(productId, 1);
+      openCheckout();
+    }
+  };
+
+  // Related products (same collection)
+  const related = products.filter(p => p.collectionId === product.collectionId && p.id !== productId).slice(0, 6);
+  renderRelatedProducts(related);
+}
+
+function renderRelatedProducts(relatedProducts){
+  if(relatedProducts.length === 0){
+    el.productRelated.style.display = "none";
+    return;
+  }
+
+  el.productRelated.style.display = "block";
+  el.productRelatedGrid.innerHTML = relatedProducts.map(p => {
+    const stock = Number(p.stock) || 0;
+    const soldOut = stock === 0;
+    return `
+      <div class="product-card" data-id="${p.id}">
+        <div class="card-image">
+          ${p.image ? `<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" onerror="this.remove();">` : ""}
+          <div class="img-fallback">🧸</div>
+          ${soldOut ? '<div class="card-sold-out">AGOTADO</div>' : ''}
+          ${stock > 0 && stock < 3 ? `<span class="card-badge">Pocas unidades</span>` : ''}
+        </div>
+        <div class="card-body">
+          <div class="card-name">${escapeHtml(p.name)}</div>
+          ${p.brand ? `<div class="card-brand">${escapeHtml(p.brand)}</div>` : ""}
+          <div class="card-price">${formatPrice(p.price)}</div>
+          <button class="card-add-btn" data-id="${p.id}" ${soldOut ? "disabled" : ""}>${soldOut ? "Agotado" : "Agregar"}</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  el.productRelatedGrid.querySelectorAll(".product-card").forEach(card => {
+    card.addEventListener("click", (e) => {
+      if(e.target.classList.contains("card-add-btn")) return;
+      openProductDetailPage(card.dataset.id);
+    });
+  });
+
+  el.productRelatedGrid.querySelectorAll(".card-add-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      addToCart(btn.dataset.id, 1);
+    });
+  });
+}
+
 function renderCollectionPageProducts(colProducts){
   el.collectionPageProductsGrid.innerHTML = colProducts.map(p => {
     const stock = Number(p.stock) || 0;
@@ -1079,7 +1222,7 @@ function renderCollectionPageProducts(colProducts){
   el.collectionPageProductsGrid.querySelectorAll(".product-card").forEach(card => {
     card.addEventListener("click", (e) => {
       if(e.target.classList.contains("card-add-btn")) return;
-      openProductModal(card.dataset.id);
+      openProductDetailPage(card.dataset.id);
     });
   });
 
@@ -1173,6 +1316,7 @@ el.navMenuBtn.addEventListener("click", toggleMenuDropdown);
 
 el.navBrand.addEventListener("click", () => {
   if(currentView === "collection") closeCollectionPage();
+  if(currentView === "product-detail") closeProductDetailPage();
   closeMenuDropdown();
 });
 
