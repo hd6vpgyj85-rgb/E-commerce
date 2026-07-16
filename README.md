@@ -40,3 +40,4 @@ const firebaseConfig = {
 ## Pedidos
 
 Los clientes arman su carrito en la tienda y al finalizar se genera un mensaje prellenado que se envía por WhatsApp al +52 656 8596503.
+
