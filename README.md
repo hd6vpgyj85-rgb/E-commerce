@@ -1,5 +1,6 @@
 # Yukly Store
 
+
 Tienda de peluches y coleccionables 100% gratuita: sin servidor propio y sin pasarela de pagos. Los pedidos se cierran por WhatsApp.
 
 ## Archivos
